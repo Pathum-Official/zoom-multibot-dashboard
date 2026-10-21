@@ -8,14 +8,16 @@
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-informational?style=for-the-badge" />
 </p>
 
-A powerful, high-performance automated Zoom Web Client attendee bot and management suite. Designed for load-testing, attendance automation, and multi-user simulations with an ultra-sleek, modern **Glassmorphism Web Dashboard** and a **1-Click Windows Launcher (`.bat`)**.
+A powerful, high-performance automated Zoom Web Client attendee bot and management suite. Designed for load-testing, attendance automation, and multi-user simulations with an ultra-sleek, modern **Glassmorphism Web Dashboard**, a **1-Click Windows Launcher (`.bat`)**, and an advanced **Chrome DevTools Protocol (CDP) Anti-Detection Stealth Engine**.
 
 ---
 
 ## 🇱🇰 සිංහලෙන් හැඳින්වීම (Sinhala Overview)
 ඕනෑම පරිශීලකයෙකුට පහසුවෙන් Zoom meetings වලට ගිණුම්/සහභාගිවන්නන් එකවර හෝ අනුපිළිවෙලින් ස්වයංක්‍රීයව සම්බන්ධ කළ හැකි ප්‍රබල මෘදුකාංගයකි. 
 - **1-Click Setup**: `start.bat` මත double click කිරීමෙන් පමණක් අවශ්‍ය සියලුම setup ස්වයංක්‍රීයව සිදුවී Dashboard එක Browser එකෙන් විවෘත වේ.
-- **Modern Dashboard**: Meeting ID, Password, Bot ගණන, Delay සහ Headless mode (RAM ඉතිරි කිරීම) පහසුවෙන් පාලනය කළ හැක.
+- **🛡️ Stealth Engine (Bypasses Zoom Anti-Bot)**: Zoom එකේ Google reCAPTCHA Enterprise පද්ධතියට හසුනොවන පරිදි සැබෑ පරිශීලකයෙකුගේ ආකාරයට සම්බන්ධ වේ.
+- **Auto-Minimized Mode**: බ්‍රව්සර් විවෘත වූ සැණින් ස්වයංක්‍රීයව Taskbar එකට Minimize වන බැවින් පරිගණකයේ ඔබේ වැඩවලට කිසිදු බාධාවක් නොවේ.
+- **Modern Dashboard**: Meeting ID, Password, Bot ගණන, Delay පහසුවෙන් පාලනය කළ හැක.
 - **Preset Names**: ශ්‍රී ලාංකික නම් 100+ ක් ඇතුලත් කර ඇති අතර ඔබේම නම් ලැයිස්තුවක්ද එක් කළ හැක.
 
 ---
@@ -24,9 +26,8 @@ A powerful, high-performance automated Zoom Web Client attendee bot and manageme
 
 - 🎨 **Modern Glassmorphic Web Dashboard**: Control and monitor all bots in real-time from a sleek web UI (`http://localhost:5000`).
 - ⚡ **1-Click Launcher (`start.bat`)**: Zero technical knowledge needed. Auto-creates Python venv, auto-installs requirements, and opens the dashboard in your default browser.
-- 🧠 **Smart RAM Optimization & Headless Mode**: 
-  - Block camera/microphone and audio streams.
-  - Optional **Headless mode** reduces memory usage by up to **70%**, enabling 20+ bots on standard machines.
+- 🛡️ **CDP Stealth Anti-Detection**: Injects custom Chrome DevTools Protocol overrides to remove `navigator.webdriver`, spoof Chrome runtime, and bypass Zoom Web Client bot restrictions.
+- 🗕 **Auto-Minimized Windows**: Browser windows automatically minimize to the taskbar immediately after launching, keeping your desktop completely clean.
 - 📋 **Preset Name Generator**: Includes 100+ authentic Sri Lankan names, international names, and custom lists with instant shuffle & randomization.
 - 📊 **Real-Time Live Console & Telemetry**: Monitor join states (Connecting, In Meeting, Waiting Room, Closed), uptime, and live logs directly from the dashboard.
 - 🎛️ **Granular Bot Control**: Stop all bots together or terminate single bot instances individually.
@@ -46,6 +47,7 @@ A powerful, high-performance automated Zoom Web Client attendee bot and manageme
    - Configure Python Virtual Environment.
    - Install required packages (`selenium`, `flask`, `webdriver-manager`).
    - Launch the Web Dashboard and open it in your browser (`http://127.0.0.1:5000`).
+4. Enter your Meeting ID and Passcode, and click **"Launch Bots"**!
 
 ---
 
@@ -88,8 +90,7 @@ Settings are automatically saved and updated from the Web Dashboard, or you can 
     "meeting_id": "7018786250",
     "password": "123",
     "account_count": 5,
-    "delay_seconds": 8,
-    "headless": false,
+    "delay_seconds": 15,
     "name_list": [
         "Kavindu Gunarathne",
         "Nethmi Gimansa",
@@ -103,8 +104,7 @@ Settings are automatically saved and updated from the Web Dashboard, or you can 
 | `meeting_id` | Zoom Meeting ID (spaces are automatically stripped) |
 | `password` | Meeting Passcode / Password |
 | `account_count` | Number of bot attendees to launch |
-| `delay_seconds` | Wait duration between launching consecutive bots (default: 8s) |
-| `headless` | `true` to run Chrome invisibly in background (saves 70% RAM), `false` for visible windows |
+| `delay_seconds` | Wait duration between launching consecutive bots (default: 15s to prevent IP rate limits) |
 | `name_list` | Array of participant display names |
 
 ---
@@ -116,7 +116,7 @@ zoom-bot/
 │
 ├── core/
 │   ├── __init__.py
-│   ├── bot_engine.py       # Selenium Zoom Web client driver & joining logic
+│   ├── bot_engine.py       # Selenium Zoom Web client driver & stealth logic
 │   └── bot_manager.py      # Multi-instance coordinator, thread pool & state
 │
 ├── static/
@@ -142,10 +142,10 @@ zoom-bot/
 
 ---
 
-## 💡 RAM & Performance Tips
+## 💡 Performance & Reliability Tips
 
-- **Enable Headless Mode**: If running 10+ bots, toggle "Headless Mode" in the Dashboard. Visible Chrome windows consume ~350MB RAM each, while headless instances only consume ~70MB.
-- **Join Interval**: Keep join interval at 8–15 seconds to avoid CPU spikes during Chrome initialization.
+- **Join Interval**: Keep join interval at **12–15 seconds**. Rapid consecutive connections from the same IP can trigger Zoom's reCAPTCHA rate limits.
+- **Auto-Minimize**: Browser windows automatically minimize to the taskbar, allowing your PC to run smoothly without window clutter.
 - **Google Chrome**: Ensure Google Chrome is installed on your computer. `webdriver-manager` will automatically manage driver versions.
 
 ---

@@ -23,7 +23,6 @@ const cfgCount = document.getElementById("cfg-count");
 const valCountBubble = document.getElementById("val-count-bubble");
 const cfgDelay = document.getElementById("cfg-delay");
 const valDelayBubble = document.getElementById("val-delay-bubble");
-const cfgHeadless = document.getElementById("cfg-headless");
 const cfgNamesTextarea = document.getElementById("cfg-names-textarea");
 const namesCountBadge = document.getElementById("names-count-badge");
 const presetSelect = document.getElementById("preset-select");
@@ -53,10 +52,6 @@ function setupEventListeners() {
 
     cfgDelay.addEventListener("input", (e) => {
         valDelayBubble.textContent = e.target.value + "s";
-    });
-
-    cfgHeadless.addEventListener("change", (e) => {
-        metricMode.textContent = e.target.checked ? "Headless Mode" : "Headed (Auto-Minimized)";
     });
 
     // Password view toggle
@@ -145,10 +140,10 @@ async function loadConfig() {
             cfgPassword.value = cfg.password || "";
             cfgCount.value = cfg.account_count || 5;
             valCountBubble.textContent = cfg.account_count || 5;
-            cfgDelay.value = cfg.delay_seconds || 12;
-            valDelayBubble.textContent = (cfg.delay_seconds || 12) + "s";
-            cfgHeadless.checked = !!cfg.headless;
-            metricMode.textContent = cfg.headless ? "Headless Mode" : "Headed (Auto-Minimized)";
+            const delay = cfg.delay_seconds || 15;
+            cfgDelay.value = delay;
+            valDelayBubble.textContent = delay + "s";
+            metricMode.textContent = "Auto-Minimized";
 
             if (cfg.name_list && Array.isArray(cfg.name_list)) {
                 cfgNamesTextarea.value = cfg.name_list.join("\n");
@@ -169,7 +164,6 @@ async function handleSaveConfig() {
         password: cfgPassword.value.trim(),
         account_count: parseInt(cfgCount.value),
         delay_seconds: parseInt(cfgDelay.value),
-        headless: cfgHeadless.checked,
         name_list: getNamesArray()
     };
 
@@ -204,7 +198,6 @@ async function handleStart() {
         password: cfgPassword.value.trim(),
         account_count: parseInt(cfgCount.value),
         delay_seconds: parseInt(cfgDelay.value),
-        headless: cfgHeadless.checked,
         name_list: getNamesArray()
     };
 
@@ -330,7 +323,7 @@ function renderBotsTable(bots) {
                     <span class="bot-badge ${badgeClass}">${escapeHtml(b.status_text)}</span>
                 </td>
                 <td>
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">${b.headless ? "Headless" : "Visible"}</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Minimized</span>
                 </td>
                 <td>
                     <span style="font-family: var(--font-mono); font-size: 0.85rem;">${b.duration}</span>

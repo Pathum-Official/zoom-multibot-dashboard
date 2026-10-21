@@ -22,39 +22,16 @@ PRESET_NAMES = {
         "Ravindu Rathnayake", "Ishani Lakshika", "Sithum Wickramasinghe", "Hiruni Himasha",
         "Hirusha Gamage", "Piyumi Hansika", "Isuru Ekanayake", "Shashini Perera",
         "Dasun Herath", "Dilini Maheshika", "Malith Gunawardena", "Chamari Atapattu",
-        "Chathura Karunaratne", "Ruwini Nethmini", "Janith Dissanayake", "Sajani Weerasinghe",
-        "Kanishka Liyanage", "Iresha Sandamali", "Supun Mendis", "Malsha Shehani",
-        "Lakshan Peiris", "Chathuri Lankika", "Madushan Samarasinghe", "Ruvini Kaushalya",
-        "Ashen Weerasinghe", "Ashani Erandika", "Ruwan Hettiarachchi", "Nadeesha Sewwandi",
-        "Sajith Nanayakkara", "Hashini Kumarasinghe", "Amila Senanayake", "Dinithi Walgama",
-        "Thilina Jayawardena", "Upeksha Swarnamali", "Sameera Pradeep", "Gayani Rathnayake",
-        "Buddhi Sampath", "Malki Perera", "Chinthaka De Silva", "Vihanga Sathsara",
-        "Damith Priyadarshana", "Imasha Dilrukshi", "Gayan Kumara", "Thilini Madushika",
-        "Heshan Vimukthi", "Nayana Kumari", "Umesh Sandeep", "Pavani Silva",
-        "Dilanka Yasiru", "Methma Hettiarachchi", "Vimukthi Gayan", "Senuri Alwis",
-        "Sandaruwan Perera", "Limini De Silva", "Lahiru Thirimanne", "Gimhani Perera",
-        "Nuwan Darshana", "Kusal Sandeepa", "Dilshan Manohara", "Dewmi Thathsarani",
-        "Chamara Jeewantha", "Oshadi Ranasinghe", "Ruwan Indika", "Piumi Shanika",
-        "Sajith Maduranga", "Nipuni Bhagya", "Isuru Nimantha", "Madhavi Gunasekara",
-        "Malith Shehan", "Ridmi Tharaka", "Chathura Dhananjaya", "Yashoda Wimaladharma",
-        "Roshan Chinthaka", "Anuki Jayasekara", "Dasun Priyankara", "Hasini Perera",
-        "Kusal Janith", "Dilrukshi Bandara", "Dimuthu Lakshan", "Maneesha Chathurani",
-        "Wanindu Gimhan", "Sanduni Abeywickrama", "Dushmantha Sameera", "Kanchana Wijesekara",
-        "Akila Sandeepa", "Harshani Gamage", "Praveen Kumar", "Sachini Nisansala"
+        "Chathura Karunaratne", "Ruwini Nethmini", "Janith Dissanayake", "Sajani Weerasinghe"
     ],
     "global": [
         "Alex Walker", "Emma Johnson", "Liam Smith", "Olivia Brown",
         "Noah Williams", "Sophia Miller", "James Davis", "Isabella Wilson",
-        "Lucas Taylor", "Mia Anderson", "Ethan Thomas", "Harper Jackson",
-        "Benjamin White", "Evelyn Harris", "Mason Martin", "Abigail Clark",
-        "Oliver Lewis", "Emily Robinson", "Elijah Walker", "Charlotte Young",
-        "Daniel Hall", "Amelia Allen", "Henry Wright", "Ella Scott",
-        "Alexander Green", "Grace Adams", "Sebastian Baker", "Chloe Gonzalez"
+        "Lucas Taylor", "Mia Anderson", "Ethan Thomas", "Harper Jackson"
     ],
     "tech": [
         "DevOps Lead", "Frontend Specialist", "Data Architect", "Cloud Engineer",
-        "QA Automation Bot", "Security Auditor", "Backend Core Dev", "System Observer",
-        "AI Research Assistant", "Network Analyst", "Site Reliability Bot"
+        "QA Automation Bot", "Security Auditor", "Backend Core Dev", "System Observer"
     ]
 }
 
@@ -96,8 +73,7 @@ def start_bots():
     meeting_id = data.get("meeting_id")
     password = data.get("password", "")
     count = data.get("account_count", 5)
-    delay = data.get("delay_seconds", 8)
-    headless = data.get("headless", False)
+    delay = data.get("delay_seconds", 15)
     name_list = data.get("name_list", [])
 
     if not meeting_id:
@@ -108,8 +84,7 @@ def start_bots():
         password=password,
         count=count,
         name_list=name_list,
-        delay=delay,
-        headless=headless
+        delay=delay
     )
     return jsonify({"success": success, "message": message})
 

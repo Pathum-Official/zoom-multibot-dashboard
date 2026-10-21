@@ -46,20 +46,21 @@ def main():
         passcode = input("Enter Passcode (leave blank if none): ").strip()
         count = input(f"Enter Bot Count [Default: {cfg.get('account_count', 5)}]: ").strip()
         count = int(count) if count.isdigit() else cfg.get("account_count", 5)
-        headless_in = input("Run in Headless mode (RAM saver)? (y/n) [Default: n]: ").strip().lower()
-        headless = (headless_in == "y")
+        delay = input(f"Enter Join Interval seconds [Default: {cfg.get('delay_seconds', 15)}]: ").strip()
+        delay = int(delay) if delay.isdigit() else cfg.get("delay_seconds", 15)
     else:
         meeting_id = cfg.get("meeting_id", "")
         passcode = cfg.get("password", "")
         count = cfg.get("account_count", 5)
-        headless = cfg.get("headless", False)
+        delay = cfg.get("delay_seconds", 15)
 
     name_list = cfg.get("name_list", ["Attendee"])
 
     print(f"\nTarget Meeting ID: {meeting_id}")
     print(f"Passcode:          " + ("*" * len(passcode) if passcode else "(None)"))
     print(f"Number of Bots:    {count}")
-    print(f"Headless Mode:     " + ("YES (Background)" if headless else "NO (Visible)"))
+    print(f"Join Interval:     {delay}s")
+    print(f"Stealth Mode:      Auto-Minimized (Bypasses Zoom bot block)")
     print("-" * 50)
 
     success, msg = manager.start_session(
@@ -67,8 +68,7 @@ def main():
         password=passcode,
         count=count,
         name_list=name_list,
-        delay=cfg.get("delay_seconds", 8),
-        headless=headless
+        delay=delay
     )
 
     if not success:

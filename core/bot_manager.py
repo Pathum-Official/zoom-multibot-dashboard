@@ -2,6 +2,7 @@
 """
 Zoom Bot Manager
 Thread-safe session controller, coordinator, and status manager for all bots.
+Uses RLock to prevent any re-entrant deadlocks.
 """
 
 import os
@@ -68,8 +69,7 @@ class BotManager:
             "meeting_id": "7018786250",
             "password": "123",
             "account_count": 5,
-            "delay_seconds": 8,
-            "headless": False,
+            "delay_seconds": 15,
             "name_list": [
                 "Kavindu Gunarathne", "Nethmi Gimansa", "Pasindu Gimhan", "Sanduni Gethmini",
                 "Tharindu Gunawardhane", "Rashmi Gothami", "Shehan Garusinhe", "Amaya Gisanka"
@@ -96,7 +96,7 @@ class BotManager:
                 self.add_log(f"Failed to save config: {e}", "error")
                 return False
 
-    def start_session(self, meeting_id, password, count, name_list, delay=8, headless=False):
+    def start_session(self, meeting_id, password, count, name_list, delay=15):
         with self.lock:
             if self.is_running:
                 return False, "A bot session is already running!"
@@ -114,7 +114,6 @@ class BotManager:
             self.config["password"] = self.password
             self.config["account_count"] = self.total_target
             self.config["delay_seconds"] = int(delay)
-            self.config["headless"] = bool(headless)
             if name_list:
                 self.config["name_list"] = name_list
             self.save_config(self.config)
@@ -134,7 +133,6 @@ class BotManager:
                     meeting_id=self.meeting_id,
                     password=self.password,
                     name=assigned_name,
-                    headless=headless,
                     log_callback=self.add_log
                 )
                 
@@ -212,8 +210,7 @@ class BotManager:
                     "name": bot.name,
                     "status": bot.status,
                     "status_text": bot.status_text,
-                    "duration": duration_str,
-                    "headless": bot.headless
+                    "duration": duration_str
                 })
 
             uptime_str = "00:00:00"

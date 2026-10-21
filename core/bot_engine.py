@@ -2,6 +2,7 @@
 """
 Zoom Bot Engine
 Handles individual Selenium WebDriver instance for Zoom Web Client with Anti-Detection CDP.
+Operates in Auto-Minimized Stealth Mode (bypasses Zoom reCAPTCHA Enterprise bot detection).
 """
 
 import time
@@ -30,12 +31,11 @@ def get_chromedriver_path():
         return _CACHED_DRIVER_PATH
 
 class ZoomBotInstance:
-    def __init__(self, index, meeting_id, password, name, headless=False, log_callback=None):
+    def __init__(self, index, meeting_id, password, name, log_callback=None):
         self.index = index
         self.meeting_id = str(meeting_id).strip().replace(" ", "")
         self.password = str(password).strip()
         self.name = str(name).strip()
-        self.headless = headless
         self.log_callback = log_callback or self._default_log
         self.driver = None
         self.status = "initialized"  # initialized, connecting, in_meeting, waiting_room, error, closed
@@ -63,7 +63,8 @@ class ZoomBotInstance:
         self._log(f"Launching Chrome for '{self.name}'...", "info")
 
         options = Options()
-        # High performance & RAM saving flags
+        # High performance flags
+        options.add_argument("--window-size=1024,768")
         options.add_argument("--disable-gpu")
         options.add_argument("--mute-audio")
         options.add_argument("--disable-extensions")
@@ -80,13 +81,6 @@ class ZoomBotInstance:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-
-        if self.headless:
-            options.add_argument("--headless=new")
-            options.add_argument("--window-size=1280,800")
-            self._log("Running in Headless mode (RAM Saver active).", "info")
-        else:
-            options.add_argument("--window-size=1024,768")
 
         # Block media stream prompts
         prefs = {
@@ -206,6 +200,12 @@ class ZoomBotInstance:
                 except Exception:
                     pass
 
+            # Minimize window immediately to taskbar so desktop stays clean
+            try:
+                self.driver.minimize_window()
+            except Exception:
+                pass
+
             # Wait to verify connection
             self.status_text = "Verifying..."
             time.sleep(10)
@@ -240,12 +240,11 @@ class ZoomBotInstance:
             except Exception:
                 pass
 
-            # Minimize window if headed mode to keep desktop clean
-            if not self.headless:
-                try:
-                    self.driver.minimize_window()
-                except Exception:
-                    pass
+            # Re-ensure window is minimized
+            try:
+                self.driver.minimize_window()
+            except Exception:
+                pass
 
             # Heartbeat loop in THIS thread
             while self.is_running:
