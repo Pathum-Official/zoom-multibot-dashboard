@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Zoom Bot Engine
-Handles individual Selenium WebDriver instance for Zoom Web Client.
+Handles individual Selenium WebDriver instance for Zoom Web Client with Anti-Detection CDP.
 """
 
 import time
@@ -77,8 +77,9 @@ class ZoomBotInstance:
 
         # Anti-detection flags
         options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 
         if self.headless:
             options.add_argument("--headless=new")
@@ -103,6 +104,27 @@ class ZoomBotInstance:
                 self.driver = webdriver.Chrome(service=service, options=options)
             else:
                 self.driver = webdriver.Chrome(options=options)
+
+            # Apply Chrome DevTools Protocol Anti-Detection injection
+            self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+                "source": """
+                    Object.defineProperty(navigator, 'webdriver', {
+                        get: () => undefined
+                    });
+                    window.navigator.chrome = {
+                        runtime: {},
+                        loadTimes: function() {},
+                        csi: function() {},
+                        app: {}
+                    };
+                    Object.defineProperty(navigator, 'plugins', {
+                        get: () => [1, 2, 3, 4, 5]
+                    });
+                    Object.defineProperty(navigator, 'languages', {
+                        get: () => ['en-US', 'en']
+                    });
+                """
+            })
 
             wait = WebDriverWait(self.driver, 25)
 
@@ -147,7 +169,6 @@ class ZoomBotInstance:
                     pwd_inp.send_keys(self.password)
                     self._log("Entered passcode.", "info")
                 except Exception:
-                    # Fallback search
                     for inp in self.driver.find_elements(By.TAG_NAME, "input"):
                         if "pwd" in (inp.get_attribute("id") or "").lower() or inp.get_attribute("type") == "password":
                             inp.send_keys(self.password)
@@ -187,13 +208,17 @@ class ZoomBotInstance:
 
             # Wait to verify connection
             self.status_text = "Verifying..."
-            time.sleep(7)
+            time.sleep(10)
 
             page_src = (self.driver.page_source or "").lower()
-            if "leave" in page_src or "mute" in page_src or "participants" in page_src:
+            if "automated bots" in page_src:
+                self.status = "error"
+                self.status_text = "Blocked by Zoom"
+                self._log("Zoom anti-bot triggered: Automated bots aren't allowed.", "error")
+            elif "leave" in page_src:
                 self.status = "in_meeting"
                 self.status_text = "In Meeting"
-                self._log(f"SUCCESS: Joined meeting as '{self.name}'!", "success")
+                self._log(f"SUCCESS: Joined meeting room as '{self.name}'!", "success")
             elif "waiting room" in page_src or "host will let you in" in page_src or "waiting for the host" in page_src:
                 self.status = "waiting_room"
                 self.status_text = "Waiting Room"
@@ -205,7 +230,7 @@ class ZoomBotInstance:
             else:
                 self.status = "in_meeting"
                 self.status_text = "Connected"
-                self._log(f"Connected: Browser session active for '{self.name}'.", "info")
+                self._log(f"Connected: Active session for '{self.name}'.", "info")
 
             # Dismiss optional audio popup
             try:
@@ -222,7 +247,7 @@ class ZoomBotInstance:
                 except Exception:
                     pass
 
-            # Heartbeat loop in THIS thread (zero cross-thread driver access!)
+            # Heartbeat loop in THIS thread
             while self.is_running:
                 time.sleep(5)
                 try:
@@ -231,7 +256,7 @@ class ZoomBotInstance:
                     self.status = "closed"
                     self.status_text = "Closed"
                     self.is_running = False
-                    self._log(f"Browser window for Bot #{self.index} was closed.", "info")
+                    self._log(f"Browser window for Bot #{self.index} closed.", "info")
                     break
 
         except Exception as e:
