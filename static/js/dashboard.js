@@ -56,7 +56,7 @@ function setupEventListeners() {
     });
 
     cfgHeadless.addEventListener("change", (e) => {
-        metricMode.textContent = e.target.checked ? "Headless (RAM Saver)" : "Headed (Visible)";
+        metricMode.textContent = e.target.checked ? "Headless Mode" : "Headed (Auto-Minimized)";
     });
 
     // Password view toggle
@@ -145,10 +145,10 @@ async function loadConfig() {
             cfgPassword.value = cfg.password || "";
             cfgCount.value = cfg.account_count || 5;
             valCountBubble.textContent = cfg.account_count || 5;
-            cfgDelay.value = cfg.delay_seconds || 8;
-            valDelayBubble.textContent = (cfg.delay_seconds || 8) + "s";
+            cfgDelay.value = cfg.delay_seconds || 12;
+            valDelayBubble.textContent = (cfg.delay_seconds || 12) + "s";
             cfgHeadless.checked = !!cfg.headless;
-            metricMode.textContent = cfg.headless ? "Headless (RAM Saver)" : "Headed (Visible)";
+            metricMode.textContent = cfg.headless ? "Headless Mode" : "Headed (Auto-Minimized)";
 
             if (cfg.name_list && Array.isArray(cfg.name_list)) {
                 cfgNamesTextarea.value = cfg.name_list.join("\n");

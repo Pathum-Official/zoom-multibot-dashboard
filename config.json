@@ -1,10 +1,14 @@
 {
     "meeting_id": "7018786250",
     "password": "123",
-    "account_count": 1,
-    "delay_seconds": 5,
-    "headless": true,
+    "account_count": 5,
+    "delay_seconds": 12,
+    "headless": false,
     "name_list": [
-        "Kavindu Gunarathne"
+        "Kav",
+        "indu",
+        "Guna",
+        "rath",
+        "ne"
     ]
 }
