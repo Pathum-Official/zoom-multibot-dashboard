@@ -15,7 +15,7 @@ CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 class BotManager:
     _instance = None
-    _lock = threading.Lock()
+    _lock = threading.RLock()
 
     def __new__(cls):
         with cls._lock:
@@ -25,7 +25,7 @@ class BotManager:
             return cls._instance
 
     def _init_manager(self):
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.bots = {}          # index -> ZoomBotInstance
         self.logs = []          # list of log dicts
         self.log_counter = 0
@@ -48,7 +48,6 @@ class BotManager:
                 "bot_id": bot_id
             }
             self.logs.append(log_entry)
-            # Keep max 500 logs in memory
             if len(self.logs) > 500:
                 self.logs.pop(0)
             return log_entry
@@ -73,12 +72,7 @@ class BotManager:
             "headless": False,
             "name_list": [
                 "Kavindu Gunarathne", "Nethmi Gimansa", "Pasindu Gimhan", "Sanduni Gethmini",
-                "Tharindu Gunawardhane", "Rashmi Gothami", "Shehan Garusinhe", "Amaya Gisanka",
-                "Avishka Grishma", "Kavindi Gimhani", "Nipun Gayashan", "Hansini Gunarathna",
-                "Ravindu Rathnayake", "Ishani Lakshika", "Sithum Wickramasinghe", "Hiruni Himasha",
-                "Hirusha Gamage", "Piyumi Hansika", "Isuru Ekanayake", "Shashini Perera",
-                "Dasun Herath", "Dilini Maheshika", "Malith Gunawardena", "Chamari Atapattu",
-                "Chathura Karunaratne", "Ruwini Nethmini", "Janith Dissanayake", "Sajani Weerasinghe"
+                "Tharindu Gunawardhane", "Rashmi Gothami", "Shehan Garusinhe", "Amaya Gisanka"
             ]
         }
         if os.path.exists(CONFIG_PATH):
@@ -131,7 +125,7 @@ class BotManager:
             names = name_list if name_list else ["Guest Participant"]
             for i in range(1, self.total_target + 1):
                 if not self.is_running:
-                    self.add_log("Session start cancelled by user.", "warning")
+                    self.add_log("Session stopped by user.", "warning")
                     break
 
                 assigned_name = names[(i - 1) % len(names)]
@@ -147,10 +141,10 @@ class BotManager:
                 with self.lock:
                     self.bots[i] = bot
 
-                # Run bot launch
+                # Launch bot in its own background thread
                 bot.start()
 
-                # Delay before next bot, checking if user requested stop
+                # Delay before next bot
                 if i < self.total_target and self.is_running:
                     self.add_log(f"Waiting {delay}s before launching next bot...", "info")
                     for _ in range(int(delay * 2)):
@@ -158,7 +152,7 @@ class BotManager:
                             break
                         time.sleep(0.5)
 
-            self.add_log("All scheduled bot launches completed.", "info")
+            self.add_log("All scheduled bot launches initiated.", "info")
 
         self.worker_thread = threading.Thread(target=_runner, daemon=True)
         self.worker_thread.start()
@@ -180,8 +174,6 @@ class BotManager:
                     bot.close()
                 except Exception:
                     pass
-            with self.lock:
-                self.bots.clear()
             self.add_log("All bot instances successfully closed.", "success")
 
         threading.Thread(target=_cleanup, daemon=True).start()
@@ -203,8 +195,8 @@ class BotManager:
             active_count = 0
             now = time.time()
 
+            # Fast in-memory check - zero cross-thread driver deadlock!
             for idx, bot in self.bots.items():
-                is_alive = bot.is_alive()
                 duration_str = "00:00"
                 if bot.start_time:
                     dur = int(now - bot.start_time)
