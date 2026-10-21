@@ -38,8 +38,8 @@ A powerful, high-performance automated Zoom Web Client attendee bot and manageme
 
 1. **Clone or Download** this repository:
    ```bash
-   git clone https://github.com/your-username/zoom-bot-dashboard.git
-   cd zoom-bot-dashboard
+   git clone https://github.com/Pathum-Official/zoom-multibot-dashboard.git
+   cd zoom-multibot-dashboard
    ```
 2. Double-click **`start.bat`**.
 3. That's it! The launcher will automatically:
@@ -55,8 +55,8 @@ Works on **Windows, macOS, and Linux**:
 
 ```bash
 # 1. Clone repo
-git clone https://github.com/your-username/zoom-bot-dashboard.git
-cd zoom-bot-dashboard
+git clone https://github.com/Pathum-Official/zoom-multibot-dashboard.git
+cd zoom-multibot-dashboard
 
 # 2. Create virtual environment
 python -m venv venv
