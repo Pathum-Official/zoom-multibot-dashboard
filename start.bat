@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+cd /d "%~dp0"
 title Zoom Bot Control Center
 color 0B
 cls
@@ -22,10 +23,10 @@ if %errorlevel% neq 0 (
 
 :: 2. Check and Setup Virtual Environment
 if not exist "venv\Scripts\activate.bat" (
-    echo [1/3] Creating Python Virtual Environment (venv)...
+    echo [1/3] Creating Python Virtual Environment...
     python -m venv venv
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to create venv!
+    if errorlevel 1 (
+        echo [ERROR] Failed to create virtual environment!
         pause
         exit /b 1
     )
@@ -35,14 +36,14 @@ if not exist "venv\Scripts\activate.bat" (
 call venv\Scripts\activate.bat
 
 :: 4. Check & Install Dependencies
-echo [2/3] Checking requirements...
+echo [2/3] Checking dependencies...
 pip install -r requirements.txt --quiet --disable-pip-version-check
 
 :: 5. Launch Web Dashboard
 echo [3/3] Launching ZoomBot Web Dashboard...
 echo.
 echo =====================================================================
-echo  Web Dashboard will open automatically at:
+echo  Web Dashboard is opening at:
 echo  URL: http://127.0.0.1:5000
 echo.
 echo  To exit, simply close this window or press CTRL+C.
@@ -51,4 +52,8 @@ echo.
 
 python app.py
 
-pause
+if errorlevel 1 (
+    echo.
+    echo [ERROR] Server encountered an error.
+    pause
+)

@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+cd /d "%~dp0"
 title Zoom Bot CLI Runner
 color 0A
 cls
@@ -9,4 +10,7 @@ if exist "venv\Scripts\activate.bat" (
 )
 
 python main.py
-pause
+if errorlevel 1 (
+    echo.
+    pause
+)
