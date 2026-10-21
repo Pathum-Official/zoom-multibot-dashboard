@@ -1,0 +1,14 @@
+{
+    "meeting_id": "1234567890",
+    "password": "passcode123",
+    "account_count": 5,
+    "delay_seconds": 8,
+    "headless": false,
+    "name_list": [
+        "Participant 1",
+        "Participant 2",
+        "Participant 3",
+        "Participant 4",
+        "Participant 5"
+    ]
+}

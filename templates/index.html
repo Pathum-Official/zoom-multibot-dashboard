@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Bot Control Center | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20width=%22100%22%20height=%22100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+</head>
+<body class="dark-theme">
+    <div class="glow-bg glow-primary"></div>
+    <div class="glow-bg glow-secondary"></div>
+
+    <div class="app-container">
+        <!-- TOP NAVIGATION -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 10L20 6.5V17.5L15 14V10Z" stroke="url(#gradient-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="3" y="6" width="12" height="12" rx="3" stroke="url(#gradient-brand)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="gradient-brand" x1="3" y1="6" x2="20" y2="17.5" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00D2FF"/>
+                                <stop offset="1" stop-color="#3A7BD5"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">ZoomBot <span class="badge-pro">PRO v2.0</span></h1>
+                    <p class="brand-subtitle">Automated Multi-Instance Presence Engine</p>
+                </div>
+            </div>
+
+            <div class="header-status">
+                <div class="status-indicator" id="global-status-pill">
+                    <span class="pulse-dot"></span>
+                    <span id="global-status-text">System Ready</span>
+                </div>
+
+                <div class="header-actions">
+                    <button class="btn btn-success" id="btn-quick-start">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <span>Start All</span>
+                    </button>
+                    <button class="btn btn-danger" id="btn-quick-stop" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+                        <span>Stop All</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI METRICS -->
+        <section class="metrics-grid">
+            <div class="card metric-card">
+                <div class="metric-icon metric-purple">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Active Bots</span>
+                    <div class="metric-value"><span id="metric-active-bots">0</span> <span class="metric-sub" id="metric-target-bots">/ 0</span></div>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon metric-blue">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M10 10l5 3-5 3v-6z"></path></svg>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Target Meeting ID</span>
+                    <div class="metric-value" id="metric-meeting-id">---</div>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon metric-green">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Active Uptime</span>
+                    <div class="metric-value" id="metric-uptime">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon metric-orange">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Mode / RAM Saver</span>
+                    <div class="metric-value" id="metric-mode">Headed</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="main-layout">
+            <!-- LEFT COLUMN: CONFIGURATION -->
+            <div class="column-left">
+                <div class="card panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <h2>Meeting Parameters</h2>
+                        </div>
+                        <span class="badge-hint">Saved in config.json</span>
+                    </div>
+
+                    <form id="bot-config-form" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="cfg-meeting-id">Meeting ID / Personal Link</label>
+                            <div class="input-with-icon">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                <input type="text" id="cfg-meeting-id" placeholder="e.g. 701 878 6250" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cfg-password">Passcode / Password</label>
+                            <div class="input-with-icon">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <input type="password" id="cfg-password" placeholder="Meeting passcode">
+                                <button type="button" class="btn-toggle-eye" id="toggle-pwd-btn">👁️</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group flex-1">
+                                <div class="label-with-val">
+                                    <label for="cfg-count">Bot Count</label>
+                                    <span class="val-bubble" id="val-count-bubble">5</span>
+                                </div>
+                                <input type="range" id="cfg-count" min="1" max="50" value="5" class="slider">
+                            </div>
+
+                            <div class="form-group flex-1">
+                                <div class="label-with-val">
+                                    <label for="cfg-delay">Join Interval</label>
+                                    <span class="val-bubble" id="val-delay-bubble">8s</span>
+                                </div>
+                                <input type="range" id="cfg-delay" min="3" max="30" value="8" class="slider">
+                            </div>
+                        </div>
+
+                        <!-- TOGGLES -->
+                        <div class="toggles-list">
+                            <label class="toggle-card">
+                                <div class="toggle-info">
+                                    <span class="toggle-title">Headless Mode</span>
+                                    <span class="toggle-desc">Runs Chrome invisibly. Saves up to 70% RAM!</span>
+                                </div>
+                                <div class="switch">
+                                    <input type="checkbox" id="cfg-headless">
+                                    <span class="slider-round"></span>
+                                </div>
+                            </label>
+
+                            <label class="toggle-card">
+                                <div class="toggle-info">
+                                    <span class="toggle-title">Auto-Mute & Block Camera</span>
+                                    <span class="toggle-desc">Automatically blocks mic/video to save bandwidth.</span>
+                                </div>
+                                <div class="switch">
+                                    <input type="checkbox" id="cfg-block-media" checked disabled>
+                                    <span class="slider-round"></span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" id="btn-start-form">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                <span>Launch Bots</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-save-cfg">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                <span>Save Settings</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: NAMES MANAGER -->
+            <div class="column-right">
+                <div class="card panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                            <h2>Participant Names</h2>
+                        </div>
+                        <span class="badge-count" id="names-count-badge">0 Names</span>
+                    </div>
+
+                    <div class="preset-toolbar">
+                        <div class="preset-dropdown-wrap">
+                            <label>Presets:</label>
+                            <select id="preset-select" class="dropdown">
+                                <option value="sinhala">🇱🇰 Sri Lankan Names (100+)</option>
+                                <option value="global">🌐 International Names</option>
+                                <option value="tech">💻 Tech & DevOps Titles</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-btns">
+                            <button class="btn btn-sm btn-outline" id="btn-shuffle-names" title="Shuffle current list">🔀 Shuffle</button>
+                            <button class="btn btn-sm btn-outline" id="btn-clear-names" title="Clear all names">🗑️ Clear</button>
+                        </div>
+                    </div>
+
+                    <div class="names-editor-wrap">
+                        <textarea id="cfg-names-textarea" rows="11" placeholder="Enter one participant name per line..."></textarea>
+                    </div>
+                    <small class="hint-text">💡 Names will cycle sequentially for each bot joined.</small>
+                </div>
+            </div>
+        </main>
+
+        <!-- ACTIVE BOTS MONITOR -->
+        <section class="card panel mt-4">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    <h2>Live Bot Instances</h2>
+                </div>
+                <div class="panel-tools">
+                    <span id="active-bots-summary">No active instances</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="bots-table">
+                    <thead>
+                        <tr>
+                            <th width="70">#</th>
+                            <th>Participant Name</th>
+                            <th>Status</th>
+                            <th>Mode</th>
+                            <th>Uptime</th>
+                            <th width="120" class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bots-tbody">
+                        <tr class="empty-row">
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <span class="empty-icon">🤖</span>
+                                    <p>No bots currently active. Click "Launch Bots" above to start.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- LIVE TERMINAL CONSOLE -->
+        <section class="card panel terminal-panel mt-4">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                    <h2>Live System Console</h2>
+                </div>
+                <div class="terminal-actions">
+                    <label class="autoscroll-toggle">
+                        <input type="checkbox" id="autoscroll-chk" checked>
+                        <span>Auto-scroll</span>
+                    </label>
+                    <button class="btn btn-sm btn-outline" id="btn-clear-terminal">Clear Console</button>
+                </div>
+            </div>
+
+            <div class="terminal-body" id="terminal-logs">
+                <div class="log-line log-info">
+                    <span class="log-ts">[Ready]</span>
+                    <span class="log-tag tag-info">INFO</span>
+                    <span class="log-msg">ZoomBot Web Control Center initialized. Ready to connect.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p>ZoomBot Pro Automated Presence Tool &bull; Designed for seamless workflow testing & automation &bull; Built with Python, Selenium & Flask</p>
+        </footer>
+    </div>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
